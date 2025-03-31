@@ -10,7 +10,7 @@
         <!--favicon-->
         <link rel="shortcut icon" href="favicon.ico" type="image/icon">
         <link rel="icon" href="favicon.ico" type="image/icon">
-        <title>CIT-PMS Home</title>
+        <title>NMIMS CET-PMS Home</title>
         <!-- Bootstrap Core CSS -->
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
         <!-- Footer -->
@@ -45,7 +45,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand page-scroll" href="http://www.cittumkur.org">Channabasaveshwara Institute of Technology</a>
+                    <a class="navbar-brand page-scroll" href="https://ncet.nmims.edu/">NMIMS CET College of Engineering & Technology</a>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -124,14 +124,14 @@
 				</div>
 				<div class="col-md-3 get_in_touch ftr">
 					<h3>GET IN TOUCH</h3>
-					<p>NH4, Herur</p>
-					<p>Gubbi, Tumkur, India</p>
-					<p>08138-223818/223365</p>
-					<a href="mailto:cittumkur@rediffmail.com">cittumkur@rediffmail.com</a>
+					<p>NMIMS Campus</p>
+					<p>Mumbai, Maharashtra, India</p>
+					<p>Contact Number</p>
+					<a href="mailto:info@nmims.edu">info@nmims.edu</a>
 				</div>
 				<div class="col-md-3 ftr-logo">
-					<p>Copyright &copy; 2015 CIT-PMS | Developed by
-              <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a>
+					<p>Copyright &copy; 2025 NMIMS CET-PMS | Developed by
+              <a href="https://ncet.nmims.edu/" target="_parent">NMIMS Technologies</a>
 				</div>
 				<div class="clearfix"></div>
 			</div>
