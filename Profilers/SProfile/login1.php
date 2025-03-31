@@ -4,7 +4,7 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 
 if ($username && $password) {
-    // Connect using MySQLi instead of mysql_connect
+    // Connect using MySQLi
     $connect = mysqli_connect("localhost", "root", "root") or die("Couldn't Connect: " . mysqli_connect_error());
     mysqli_select_db($connect, "details") or die("Can't find DB: " . mysqli_error($connect));
     
@@ -21,6 +21,7 @@ if ($username && $password) {
         $dbusername = $row['USN'];
         $dbpassword = $row['PASSWORD'];
         
+        // SECURITY ISSUE: Consider using password_verify() instead of direct comparison
         if ($username == $dbusername && $password == $dbpassword) {
             echo "<center>Login Successful..!! <br/>Redirecting you to HomePage! </br>If not Goto <a href='index.php'> Here </a></center>";
             echo "<meta http-equiv='refresh' content ='3; url=index.php'>";

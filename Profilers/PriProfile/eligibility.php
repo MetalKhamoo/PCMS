@@ -1,9 +1,11 @@
 <?php
   session_start();
   if(isset($_SESSION["priusername"])){
+    // Session valid
+  } else {
+    header("location: index.php");
+    exit(); // Added exit after redirect for security
   }
-   else
-	   header("location: index.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,11 +40,10 @@
         <header class="templatemo-site-header">
           <div class="square"></div>
           <?php
-		  $Welcome = "Welcome";
+          $Welcome = "Welcome";
           echo "<h1>" . $Welcome . "<br>". $_SESSION['priusername']. "</h1>";
-		 echo "<br>";
-		
-		  ?>
+          echo "<br>";
+          ?>
         </header>
         <div class="profile-photo-container">
           <img src="images/profile-photo.jpg" alt="Profile Photo" class="img-responsive">  
@@ -96,136 +97,135 @@
               <table class="table table-striped table-bordered templatemo-user-table">
                 <thead>
                   <tr>
-					<td><a href="" class="white-text templatemo-sort-by">First Name <span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">First Name <span class="caret"></span></a></td>
                     <td><a href="" class="white-text templatemo-sort-by">Last Name <span class="caret"></span></a></td>
                     <td><a href="" class="white-text templatemo-sort-by">USN<span class="caret"></span></a></td>
                     <td><a href="" class="white-text templatemo-sort-by">Mobile<span class="caret"></span></a></td>
-					   <td><a href="" class="white-text templatemo-sort-by">Email<span class="caret"></span></a></td>
-                       <td><a href="" class="white-text templatemo-sort-by">Dob <span class="caret"></span></a></td>
-   <td><a href="" class="white-text templatemo-sort-by">current sem<span class="caret"></span></a></td>               
-   <td><a href="" class="white-text templatemo-sort-by">Branch<span class="caret"></span></a></td>
-   <td><a href="" class="white-text templatemo-sort-by">SSLC percentage <span class="caret"></span></a></td>
-   <td><a href="" class="white-text templatemo-sort-by">PU percentage<span class="caret"></span></a></td>
-			      <td><a href="" class="white-text templatemo-sort-by">BE aggregate<span class="caret"></span></a></td>
-			      <td><a href="" class="white-text templatemo-sort-by">current backlogs <span class="caret"></span></a></td>
-				     <td><a href="" class="white-text templatemo-sort-by">history of backlogs <span class="caret"></span></a></td>
-				     <td><a href="" class="white-text templatemo-sort-by">Detain years<span class="caret"></span></a></td>
-				  </thead>
-			   </tr>
-			   
-			   <?php
-
-$num_rec_per_page=15;
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; }; 
-$start_from = ($page-1) * $num_rec_per_page; 
-$sql = "SELECT * FROM basicdetails where Approve='1' DESC LIMIT $start_from, $num_rec_per_page"; 
-$rs_result = mysql_query ($sql); //run the query
-?>
+                    <td><a href="" class="white-text templatemo-sort-by">Email<span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">Dob <span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">Current Sem<span class="caret"></span></a></td>               
+                    <td><a href="" class="white-text templatemo-sort-by">Branch<span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">SSLC percentage <span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">PU percentage<span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">BE aggregate<span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">Current backlogs <span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">History of backlogs <span class="caret"></span></a></td>
+                    <td><a href="" class="white-text templatemo-sort-by">Detain years<span class="caret"></span></a></td>
+                  </tr>
+                </thead>
+                <tbody>
 <?php
+// Replace with mysqli connection
+$conn = mysqli_connect('localhost', 'root', 'root', 'details');
 
-
-if(isset($_POST['submit']))
-{ 
-$branch = $_POST['Branch'];
-$sslc= $_POST['sslc'];
-$puaggregate = $_POST['pugg'];
-$beaggregate= $_POST['beagg'];
-$backlogs = $_POST['curback']; 
-$hisofbk = $_POST['hob'];
-$dety = $_POST['dy'];
-$sql = "SELECT * FROM basicdetails where Approve=1 and Branch='$branch' and SSLC>='$sslc' and `PU/Dip`>='$puaggregate' and BE>='$beaggregate' and Backlogs='$backlogs' and HofBacklogs='$hisofbk' and DetainYears='$dety'" ; 
- //run the query
-
- $sql1 = mysql_query($sql);
-
-while ($row = mysql_fetch_assoc($sql1))
-{ 
-
-
-            print "<tr>"; 
- 
-print "<td>" . $row['FirstName'] . "</td>"; 
-print "<td>" . $row['LastName'] . "</td>"; 
-print "<td>" . $row['USN'] . "</td>"; 
-print "<td>" . $row['Mobile'] . "</td>"; 
-print "<td>" . $row['Email'] . "</td>";
-print "<td>" . $row['DOB'] . "</td>"; 
-print "<td>" . $row['Sem'] . "</td>"; 
-print "<td>" . $row['Branch'] . "</td>"; 
-print "<td>" . $row['SSLC'] . "</td>"; 
-print "<td>" . $row['PU/Dip'] . "</td>"; 
-print "<td>" . $row['BE'] . "</td>";
-print "<td>" . $row['Backlogs'] . "</td>";
-print "<td>" . $row['HofBacklogs'] . "</td>";
-print "<td>" . $row['DetainYears'] . "</td>";
-
-print "</tr>"; 
-
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+
+$num_rec_per_page = 15;
+if (isset($_GET["page"])) { 
+    $page = $_GET["page"]; 
+} else { 
+    $page = 1; 
 }
-?> 
- </tbody>
+
+$start_from = ($page-1) * $num_rec_per_page;
+
+// Using prepared statement for pagination query
+$stmt = mysqli_prepare($conn, "SELECT * FROM basicdetails WHERE Approve='1' ORDER BY FirstName DESC LIMIT ?, ?");
+mysqli_stmt_bind_param($stmt, "ii", $start_from, $num_rec_per_page);
+mysqli_stmt_execute($stmt);
+$rs_result = mysqli_stmt_get_result($stmt);
+
+if(isset($_POST['submit'])) { 
+    $branch = $_POST['Branch'];
+    $sslc = $_POST['sslc'];
+    $puaggregate = $_POST['pugg'];
+    $beaggregate = $_POST['beagg'];
+    $backlogs = $_POST['curback']; 
+    $hisofbk = $_POST['hob'];
+    $dety = $_POST['dy'];
+    
+    // Using prepared statement for filter query
+    $stmt_filter = mysqli_prepare($conn, "SELECT * FROM basicdetails WHERE Approve=1 AND Branch=? AND SSLC>=? AND `PU/Dip`>=? AND BE>=? AND Backlogs=? AND HofBacklogs=? AND DetainYears=?");
+    mysqli_stmt_bind_param($stmt_filter, "sdddsss", $branch, $sslc, $puaggregate, $beaggregate, $backlogs, $hisofbk, $dety);
+    mysqli_stmt_execute($stmt_filter);
+    $sql1 = mysqli_stmt_get_result($stmt_filter);
+
+    while ($row = mysqli_fetch_assoc($sql1)) { 
+        echo "<tr>"; 
+        echo "<td>" . $row['FirstName'] . "</td>"; 
+        echo "<td>" . $row['LastName'] . "</td>"; 
+        echo "<td>" . $row['USN'] . "</td>"; 
+        echo "<td>" . $row['Mobile'] . "</td>"; 
+        echo "<td>" . $row['Email'] . "</td>";
+        echo "<td>" . $row['DOB'] . "</td>"; 
+        echo "<td>" . $row['Sem'] . "</td>"; 
+        echo "<td>" . $row['Branch'] . "</td>"; 
+        echo "<td>" . $row['SSLC'] . "</td>"; 
+        echo "<td>" . $row['PU/Dip'] . "</td>"; 
+        echo "<td>" . $row['BE'] . "</td>";
+        echo "<td>" . $row['Backlogs'] . "</td>";
+        echo "<td>" . $row['HofBacklogs'] . "</td>";
+        echo "<td>" . $row['DetainYears'] . "</td>";
+        echo "</tr>"; 
+    }
+    mysqli_stmt_close($stmt_filter);
+}
+?>
+                </tbody>
               </table>  
-			  </div>
-			  </div>
-			  </div>
-			  <div class="pagination-wrap">
+            </div>
+          </div>
+        </div>
+        <div class="pagination-wrap">
           <ul class="pagination">
-			  <?php 
-		
-$num_rec_per_page=15;
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-$sql = "SELECT * FROM basicdetails where Approve='1'"; 
-$rs_result = mysql_query($sql); //run the query
-$total_records = mysql_num_rows($rs_result);  //count number of records
+<?php 
+// Count total records for pagination
+$sql_count = "SELECT COUNT(*) AS total FROM basicdetails WHERE Approve='1'";
+$result_count = mysqli_query($conn, $sql_count);
+$row_count = mysqli_fetch_assoc($result_count);
+$total_records = $row_count['total'];
 $totalpage = ceil($total_records / $num_rec_per_page); 
 
 $currentpage = (isset($_GET['page']) ? $_GET['page'] : 1);
-	 if($currentpage == 0)
-	{
-	   
-	}
-	else if( $currentpage >= 1  &&  $currentpage <= $totalpage  )
-	{
-	
-		if( $currentpage > 1 && $currentpage <= $totalpage)
-			{
-				
-				$prev = $currentpage-1;
-				echo "<li><a  href='eligibility.php?page=".$prev."'><</a></li>";
-				
-			}
-	
-	if($totalpage > 1){
-$prev = $currentpage-1;
-	for ($i=$prev+1; $i<=$currentpage+2; $i++){
-		echo "<li><a href='eligibility.php?page=".$i."'>".$i."</a></li>";
-  }
-  }
-	
-	
-	if($totalpage > $currentpage  )
-	{
-		$nxt = $currentpage+1;
-		echo "<li><a  href='eligibility.php?page=".$nxt."' >></a></li>";
-	}
+if($currentpage == 0) {
+    // Invalid page
+} else if($currentpage >= 1 && $currentpage <= $totalpage) {
+    if($currentpage > 1 && $currentpage <= $totalpage) {
+        $prev = $currentpage - 1;
+        echo "<li><a href='eligibility.php?page=".$prev."'><</a></li>";
+    }
+    
+    if($totalpage > 1) {
+        $prev = $currentpage - 1;
+        for ($i = $prev + 1; $i <= $currentpage + 2; $i++) {
+            if ($i <= $totalpage) {
+                echo "<li><a href='eligibility.php?page=".$i."'>".$i."</a></li>";
+            }
+        }
+    }
+    
+    if($totalpage > $currentpage) {
+        $nxt = $currentpage + 1;
+        echo "<li><a href='eligibility.php?page=".$nxt."'>></a></li>";
+    }
 
-	 echo "<li><a>Total Pages:".$totalpage."</a></li>";
+    echo "<li><a>Total Pages: ".$totalpage."</a></li>";
 }
- ?> 
 
-</ul>
-</div>
-
-			  <footer class="text-right">
-           		<p>Copyright &copy; 2015 CIT-PMS | Developed by
-              <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a>
-			  </p>
-          </footer>         
+// Close the connection
+mysqli_close($conn);
+?> 
+          </ul>
         </div>
+
+        <footer class="text-right">
+          <p>Copyright &copy; 2015 CIT-PMS | Developed by
+            <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a>
+          </p>
+        </footer>         
       </div>
     </div>
     

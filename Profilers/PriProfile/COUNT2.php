@@ -1,79 +1,67 @@
 <?php
   session_start();
- if (isset($_SESSION['priusername'])){
-	   }
-   else {
-	   header("location: index.php");
-   }
-   
+  if (!isset($_SESSION['priusername'])) {
+    header("location: index.php");
+    exit; // Add exit after redirect for security
+  }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Company Details</title>
 </head>
 <body>
 <center>
 <?php
-			
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-if(isset($_POST['submit']))
-{ 
-$cname = $_POST['cname'];
-$sql = mysql_query("SELECT * FROM addpdrive WHERE `CompanyName`='$cname'");
+// Database connection - updated to match the style from the first code
+$conn = mysqli_connect('localhost', 'root', 'root', 'details');
 
-while($row = mysql_fetch_assoc($sql))
-{
-	            print "<tr>"; 
-	print "<br><td>Date:";
-    echo $row['Date'];
-	print "<br></td><td>Campus/Pool:"; 
-	echo $row['C/P'];
-	print "<br></td><td>Pool Venue:"; 
-	echo  $row['PVenue'];
-	print "<br></td><td>SSLC:"; 
-	echo $row['SSLC'];
-	print "<br></td><td>PU/Dip:"; 
-	echo $row['PU/Dip'];
-	print "<br></td><td>BE Aggregate:";
-    echo $row['BE'];	
-	print "<br></td><td>Current Backlogs:"; 
-	echo $row['Backlogs'];
-	print "<br></td><td>History of Backlogs:"; 
-	echo $row['HofBacklogs'];
-	print "<br></td><td>Detain Years:"; 
-	echo $row['DetainYears'];
-	print "<br></td><td>Other Details:";
-	echo $row['ODetails'];
-print "</td></tr><br><br><br>"; 
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+
+if(isset($_POST['submit'])) { 
+    $cname = $_POST['cname'];
+    
+    // Use prepared statements to prevent SQL injection
+    $stmt = mysqli_prepare($conn, "SELECT * FROM addpdrive WHERE CompanyName=?");
+    mysqli_stmt_bind_param($stmt, "s", $cname);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    while($row = mysqli_fetch_assoc($result)) {
+        print "<tr>"; 
+        print "<br><td>Date: ";
+        echo htmlspecialchars($row['Date']);
+        print "<br></td><td>Campus/Pool: "; 
+        echo htmlspecialchars($row['C/P']);
+        print "<br></td><td>Pool Venue: "; 
+        echo htmlspecialchars($row['PVenue']);
+        print "<br></td><td>SSLC: "; 
+        echo htmlspecialchars($row['SSLC']);
+        print "<br></td><td>PU/Dip: "; 
+        echo htmlspecialchars($row['PU/Dip']);
+        print "<br></td><td>BE Aggregate: ";
+        echo htmlspecialchars($row['BE']);
+        print "<br></td><td>Current Backlogs: "; 
+        echo htmlspecialchars($row['Backlogs']);
+        print "<br></td><td>History of Backlogs: "; 
+        echo htmlspecialchars($row['HofBacklogs']);
+        print "<br></td><td>Detain Years: "; 
+        echo htmlspecialchars($row['DetainYears']);
+        print "<br></td><td>Other Details: ";
+        echo htmlspecialchars($row['ODetails']);
+        print "</td></tr><br><br><br>"; 
+    }
+    
+    // Close the statement
+    mysqli_stmt_close($stmt);
 }
+
+// Close the connection
+mysqli_close($conn);
 ?>
-<!--while ($row = mysql_fetch_assoc($rs_result)) 
-{ 
-
-            print "<tr>"; 
-
-print "<td>" . $row['FirstName'] . "</td>"; 
-print "<td>" . $row['LastName'] . "</td>"; 
-print "<td>" . $row['USN'] . "</td>"; 
-print "<td>" . $row['Mobile'] . "</td>"; 
-print "<td>" . $row['Email'] . "</td>"; 
-print "<td>" . $row['DOB'] . "</td>"; 
-print "<td>" . $row['Sem'] . "</td>"; 
-print "<td>" . $row['Branch'] . "</td>"; 
-print "<td>" . $row['SSLC'] . "</td>"; 
-print "<td>" . $row['PU/Dip'] . "</td>"; 
-print "<td>" . $row['BE'] . "</td>";
-print "<td>" . $row['Backlogs'] . "</td>";
-print "<td>" . $row['HofBacklogs'] . "</td>";
-print "<td>" . $row['DetainYears'] . "</td>";
-
-
-
-
-print "</tr>"; 
-
-}-->
 </center>
-</body></html>
+</body>
+</html>

@@ -4,7 +4,8 @@
     echo "Welcome, ".$_SESSION['priusername']."!";
   }
    else {
-	   header("location: index.php");
+     header("location: index.php");
+     exit; // Added exit after redirect for security
    }
 ?>
 <!DOCTYPE html>
@@ -39,9 +40,9 @@
         <header class="templatemo-site-header">
           <div class="square"></div>
          <?php
-		  $Welcome = "Welcome";
+          $Welcome = "Welcome";
           echo "<h1>" . $Welcome . "<br>". $_SESSION['priusername']. "</h1>";
-		  ?>
+          ?>
         </header>
         <div class="profile-photo-container">
           <img src="images/profile-photo.jpg" alt="Profile Photo" class="img-responsive">  
@@ -103,111 +104,113 @@
                     <td><a href="" class="white-text templatemo-sort-by">Mobile<span class="caret"></span></a></td>
                     <td><a href="" class="white-text templatemo-sort-by">Email <span class="caret"></span></a></td>
                      <td><a href="" class="white-text templatemo-sort-by">DOB<span class="caret"></span></a></td>
-					  <td><a href="" class="white-text templatemo-sort-by">Sem<span class="caret"></span></a></td>
-					   <td><a href="" class="white-text templatemo-sort-by">Branch<span class="caret"></span></a></td>
-					    <td><a href="" class="white-text templatemo-sort-by">SSLC<span class="caret"></span></a></td>
-						 <td><a href="" class="white-text templatemo-sort-by">PU/Dip <span class="caret"></span></a></td>
-						  <td><a href="" class="white-text templatemo-sort-by">BE<span class="caret"></span></a></td>
-						   <td><a href="" class="white-text templatemo-sort-by">Current Backlogs <span class="caret"></span></a></td>
-						    <td><a href="" class="white-text templatemo-sort-by">History of Backlogs <span class="caret"></span></a></td>
-							 <td><a href="" class="white-text templatemo-sort-by">Detain years <span class="caret"></span></a></td>
-					
+                      <td><a href="" class="white-text templatemo-sort-by">Sem<span class="caret"></span></a></td>
+                       <td><a href="" class="white-text templatemo-sort-by">Branch<span class="caret"></span></a></td>
+                        <td><a href="" class="white-text templatemo-sort-by">SSLC<span class="caret"></span></a></td>
+                         <td><a href="" class="white-text templatemo-sort-by">PU/Dip <span class="caret"></span></a></td>
+                          <td><a href="" class="white-text templatemo-sort-by">BE<span class="caret"></span></a></td>
+                           <td><a href="" class="white-text templatemo-sort-by">Current Backlogs <span class="caret"></span></a></td>
+                            <td><a href="" class="white-text templatemo-sort-by">History of Backlogs <span class="caret"></span></a></td>
+                             <td><a href="" class="white-text templatemo-sort-by">Detain years <span class="caret"></span></a></td>
+                    
                   </tr>
                 </thead>
-            
- <?php
-		
-$num_rec_per_page=15;
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-if (isset($_GET["page"])) { $page  = $_GET["page"]; } else { $page=1; }; 
-$start_from = ($page-1) * $num_rec_per_page; 
-$sql = "SELECT * FROM basicdetails where Approve='1' ORDER BY ApprovalDate DESC LIMIT $start_from, $num_rec_per_page"; 
-$rs_result = mysql_query ($sql); //run the query
-?>
+                <tbody>
 <?php
-while ($row = mysql_fetch_assoc($rs_result)) 
-{ 
+// Database connection
+$conn = mysqli_connect('localhost', 'root', 'root', 'details');
 
-            print "<tr>"; 
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
-print "<td>" . $row['FirstName'] . "</td>"; 
-print "<td>" . $row['LastName'] . "</td>"; 
-print "<td>" . $row['USN'] . "</td>"; 
-print "<td>" . $row['Mobile'] . "</td>"; 
-print "<td>" . $row['Email'] . "</td>"; 
-print "<td>" . $row['DOB'] . "</td>"; 
-print "<td>" . $row['Sem'] . "</td>"; 
-print "<td>" . $row['Branch'] . "</td>"; 
-print "<td>" . $row['SSLC'] . "</td>"; 
-print "<td>" . $row['PU/Dip'] . "</td>"; 
-print "<td>" . $row['BE'] . "</td>";
-print "<td>" . $row['Backlogs'] . "</td>";
-print "<td>" . $row['HofBacklogs'] . "</td>";
-print "<td>" . $row['DetainYears'] . "</td>";
+$num_rec_per_page = 15;
 
+// Check if the page parameter exists
+if (isset($_GET["page"])) { 
+    $page = $_GET["page"]; 
+} else { 
+    $page = 1; 
+}
 
+$start_from = ($page-1) * $num_rec_per_page; 
+$sql = "SELECT * FROM basicdetails WHERE Approve='1' ORDER BY ApprovalDate DESC LIMIT $start_from, $num_rec_per_page"; 
+$result = mysqli_query($conn, $sql);
 
+// Check if query was successful
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));
+}
 
-print "</tr>"; 
-
+// Loop through results
+while ($row = mysqli_fetch_assoc($result)) { 
+    echo "<tr>"; 
+    echo "<td>" . htmlspecialchars($row['FirstName']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['LastName']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['USN']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['Mobile']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['Email']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['DOB']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['Sem']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['Branch']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['SSLC']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['PU/Dip']) . "</td>"; 
+    echo "<td>" . htmlspecialchars($row['BE']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['Backlogs']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['HofBacklogs']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['DetainYears']) . "</td>";
+    echo "</tr>"; 
 }
 ?> 
-
                 </tbody>
               </table>  
-			  </div>
-			  </div>
-			  </div>
+            </div>
+          </div>
+        </div>
              
-
-  <div class="pagination-wrap">
-    <ul class="pagination">
-			  <?php 
-		
-$num_rec_per_page=15;
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-$sql = "SELECT * FROM basicdetails where Approve='1' "; 
-$rs_result = mysql_query($sql); //run the query
-$total_records = mysql_num_rows($rs_result);  //count number of records
+        <div class="pagination-wrap">
+          <ul class="pagination">
+<?php 
+// Calculate total pages
+$sql = "SELECT COUNT(*) AS total FROM basicdetails WHERE Approve='1'"; 
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+$total_records = $row['total'];
 $totalpage = ceil($total_records / $num_rec_per_page); 
 
 $currentpage = (isset($_GET['page']) ? $_GET['page'] : 1);
-	 if($currentpage == 0)
-	{
-	   
-	}
-	else if( $currentpage >= 1  &&  $currentpage <= $totalpage  )
-	{
-	
-		if( $currentpage > 1 && $currentpage <= $totalpage)
-			{
-				
-				$prev = $currentpage-1;
-				echo "<li><a  href='manage-users.php?page=".$prev."'><</a></li>";
-				
-			}
-	
-	if($totalpage > 1){
-$prev = $currentpage-1;
-	for ($i=$prev+1; $i<=$currentpage+2; $i++){
-		echo "<li><a href='manage-users.php?page=".$i."'>".$i."</a></li>";
-  }
-  }
-	
-	
-	if($totalpage > $currentpage  )
-	{
-		$nxt = $currentpage+1;
-		echo "<li><a  href='manage-users.php?page=".$nxt."' >></a></li>";
-	}
 
-	 echo "<li><a>Total Pages:".$totalpage."</a></li>";
+if ($currentpage >= 1 && $currentpage <= $totalpage) {
+    // Previous page link
+    if ($currentpage > 1 && $currentpage <= $totalpage) {
+        $prev = $currentpage - 1;
+        echo "<li><a href='manage-users.php?page=" . $prev . "'><</a></li>";
+    }
+    
+    // Page numbers
+    if ($totalpage > 1) {
+        $prev = $currentpage - 1;
+        for ($i = $prev + 1; $i <= min($currentpage + 2, $totalpage); $i++) {
+            $active = ($i == $currentpage) ? " class='active'" : "";
+            echo "<li" . $active . "><a href='manage-users.php?page=" . $i . "'>" . $i . "</a></li>";
+        }
+    }
+    
+    // Next page link
+    if ($totalpage > $currentpage) {
+        $nxt = $currentpage + 1;
+        echo "<li><a href='manage-users.php?page=" . $nxt . "'>></a></li>";
+    }
+
+    echo "<li><a>Total Pages: " . $totalpage . "</a></li>";
 }
- ?> 
-</ul>
-</div>
+
+// Close the database connection
+mysqli_close($conn);
+?> 
+          </ul>
+        </div>
           <footer class="text-right">
             <p>Copyright &copy; 2015 CIT-PMS | Developed by
               <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a></p>

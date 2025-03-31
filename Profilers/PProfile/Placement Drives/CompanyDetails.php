@@ -129,10 +129,12 @@
                     echo "<tr>"; 
                     echo "<td>" . $row['CompanyName'] . "</td>"; 
                     echo "<td>" . $row['Date'] . "</td>"; 
-                    echo "<td>" . $row['C/P'] . "</td>"; 
+                    // Fix for undefined array keys by checking if they exist
+                    echo "<td>" . (isset($row['C/P']) ? $row['C/P'] : (isset($row['CP']) ? $row['CP'] : '')) . "</td>"; 
                     echo "<td>" . $row['PVenue'] . "</td>"; 
                     echo "<td>" . $row['SSLC'] . "</td>"; 
-                    echo "<td>" . $row['PU/Dip'] . "</td>"; 
+                    // Fix for undefined array key PU/Dip
+                    echo "<td>" . (isset($row['PU/Dip']) ? $row['PU/Dip'] : (isset($row['PUDip']) ? $row['PUDip'] : '')) . "</td>"; 
                     echo "<td>" . $row['BE'] . "</td>";
                     echo "<td>" . $row['Backlogs'] . "</td>";
                     echo "<td>" . $row['HofBacklogs'] . "</td>";
@@ -202,8 +204,8 @@
     </div>
     
     <!-- JS -->
-    <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>      <!-- jQuery -->
-    <script type="text/javascript" src="js/templatemo-script.js"></script>      <!-- Templatemo Script -->
+    <script src="../js/jquery-1.11.2.min.js"></script>      <!-- jQuery -->
+    <script src="../js/templatemo-script.js"></script>      <!-- Templatemo Script -->
     <script>
       $(document).ready(function(){
         // Content widget with background image

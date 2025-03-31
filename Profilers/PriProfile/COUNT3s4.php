@@ -1,10 +1,11 @@
 <?php
   session_start();
- if (isset($_SESSION['priusername'])){
+  if (isset($_SESSION['priusername'])){
     
-	   }
-   else {
-	   header("location: index.php");
+  }
+  else {
+    header("location: index.php");
+    exit; // Added exit for security
   }  
 ?>
 <!DOCTYPE html>
@@ -37,69 +38,93 @@
   <div class="templatemo-content-container">
           <div class="templatemo-content-widget no-padding">
             <div class="panel panel-default table-responsive">
-			<table class="table table-striped table-bordered templatemo-user-table">
+            <table class="table table-striped table-bordered templatemo-user-table">
                 <thead>
                   <tr>    
-<td><a  class="white-text templatemo-sort-by">Branch </a></td>
- <td><a  class="white-text templatemo-sort-by">Sem </a></td>   				  
+                    <td><a class="white-text templatemo-sort-by">Branch </a></td>
+                    <td><a class="white-text templatemo-sort-by">Sem </a></td>                  
                     <td><a class="white-text templatemo-sort-by">First Name </a></td>
-                    <td><a  class="white-text templatemo-sort-by">Last Name </a></td>
-                    <td><a  class="white-text templatemo-sort-by">USN </a></td>
-                    <td><a  class="white-text templatemo-sort-by">Mobile </a></td>
-					   <td><a  class="white-text templatemo-sort-by">Email </a></td>
-                       <td><a  class="white-text templatemo-sort-by">DOB</a></td>  
-   <td><a  class="white-text templatemo-sort-by">SSLC </a></td>
-   <td><a  class="white-text templatemo-sort-by">PU/Dip </a></td>
-			      <td><a  class="white-text templatemo-sort-by">BE </a></td>
-			      <td><a  class="white-text templatemo-sort-by">Backlogs </a></td>
-				     <td><a class="white-text templatemo-sort-by">History Of Backlogs </a></td>
-				     <td><a  class="white-text templatemo-sort-by">Detain Years </a></td> 
-				  </thead>
-			   </tr>			   
- <?php		
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-if(isset($_POST['s4']))
-{ 
-$Cbranch = $_POST['cbranch'];
-$RESULT = mysql_query("SELECT count(*) FROM basicdetails WHERE `Approve`='1' AND Branch='$Cbranch'");
-$data = mysql_fetch_assoc($RESULT);
-echo "<br><h3>Students in '$Cbranch' Branch&nbsp:&nbsp";
-echo $data['count(*)'];
-echo "</h3>"; 
-$sql = mysql_query("SELECT * FROM basicdetails WHERE `Approve`='1' AND Branch='$Cbranch' ORDER BY Sem");
-while($row = mysql_fetch_assoc($sql))
-{
-	            print "<tr>"; 	
-	echo '<td>'.$row['Branch'].'</td>';			
-	echo '<td>'.$row['Sem'].'</td>';			
-    echo '<td>'.$row['FirstName'].'</td>';	
-	echo '<td>'.$row['LastName'].'</td>';		
-	echo '<td>'.$row['USN'].'</td>';	
-	echo '<td>'.$row['Mobile'].'</td>';	
-    echo '<td>'.$row['Email'].'</td>';		
-	echo '<td>'.$row['DOB'].'</td>';			 			
-	echo '<td>'.$row['SSLC'].'</td>';	
-	echo '<td>'.$row['PU/Dip'].'</td>';	
-	echo '<td>'.$row['BE'].'</td>';	
-	echo '<td>'.$row['Backlogs'].'</td>';	
-	echo '<td>'.$row['HofBacklogs'].'</td>';	
-	echo '<td>'.$row['DetainYears'].'</td>';
-print "</tr>"; 
+                    <td><a class="white-text templatemo-sort-by">Last Name </a></td>
+                    <td><a class="white-text templatemo-sort-by">USN </a></td>
+                    <td><a class="white-text templatemo-sort-by">Mobile </a></td>
+                    <td><a class="white-text templatemo-sort-by">Email </a></td>
+                    <td><a class="white-text templatemo-sort-by">DOB</a></td>  
+                    <td><a class="white-text templatemo-sort-by">SSLC </a></td>
+                    <td><a class="white-text templatemo-sort-by">PU/Dip </a></td>
+                    <td><a class="white-text templatemo-sort-by">BE </a></td>
+                    <td><a class="white-text templatemo-sort-by">Backlogs </a></td>
+                    <td><a class="white-text templatemo-sort-by">History Of Backlogs </a></td>
+                    <td><a class="white-text templatemo-sort-by">Detain Years </a></td> 
+                  </tr>
+                </thead>
+                <tbody>        
+<?php
+// Replace mysql_connect with mysqli_connect
+$conn = mysqli_connect('localhost', 'root', 'root', 'details');
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+
+if(isset($_POST['s4'])) { 
+    $Cbranch = $_POST['cbranch'];
+    
+    // Use prepared statements to prevent SQL injection
+    $result_stmt = mysqli_prepare($conn, "SELECT count(*) FROM basicdetails WHERE `Approve`='1' AND Branch=?");
+    mysqli_stmt_bind_param($result_stmt, "s", $Cbranch);
+    mysqli_stmt_execute($result_stmt);
+    $count_result = mysqli_stmt_get_result($result_stmt);
+    $data = mysqli_fetch_assoc($count_result);
+    
+    echo "<br><h3>Students in '$Cbranch' Branch&nbsp:&nbsp";
+    echo $data['count(*)'];
+    echo "</h3>"; 
+    
+    // Prepare and execute the main query
+    $stmt = mysqli_prepare($conn, "SELECT * FROM basicdetails WHERE `Approve`='1' AND Branch=? ORDER BY Sem");
+    mysqli_stmt_bind_param($stmt, "s", $Cbranch);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    while($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo '<td>'.$row['Branch'].'</td>';
+        echo '<td>'.$row['Sem'].'</td>';
+        echo '<td>'.$row['FirstName'].'</td>';
+        echo '<td>'.$row['LastName'].'</td>';
+        echo '<td>'.$row['USN'].'</td>';
+        echo '<td>'.$row['Mobile'].'</td>';
+        echo '<td>'.$row['Email'].'</td>';
+        echo '<td>'.$row['DOB'].'</td>';
+        echo '<td>'.$row['SSLC'].'</td>';
+        echo '<td>'.$row['PU/Dip'].'</td>';
+        echo '<td>'.$row['BE'].'</td>';
+        echo '<td>'.$row['Backlogs'].'</td>';
+        echo '<td>'.$row['HofBacklogs'].'</td>';
+        echo '<td>'.$row['DetainYears'].'</td>';
+        echo "</tr>"; 
+    }
+    
+    // Close statements
+    mysqli_stmt_close($result_stmt);
+    mysqli_stmt_close($stmt);
 }
+
+// Close connection
+mysqli_close($conn);
 ?>
-     </tbody>
+                </tbody>
               </table>  
-			  </div>
-			  </div>
-			  </div>
- <footer class="text-right">
+            </div>
+          </div>
+        </div>
+        <footer class="text-right">
             <p>Copyright &copy; 2001-2015 CIT-PMS
             |  Developed by <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a></p>
-          </footer>         
-        </div>
+        </footer>         
       </div>
+    </div>
     </div>    
     <!-- JS -->
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>      <!-- jQuery -->

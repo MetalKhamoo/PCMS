@@ -1,18 +1,19 @@
 <?php
   session_start();
- if (isset($_SESSION['priusername'])){
+  if (isset($_SESSION['priusername'])){
     
-	   }
-   else {
-	   header("location: index.php");
+  }
+  else {
+    header("location: index.php");
+    exit; // Add exit after redirect for security
   }  
 ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <!--favicon-->
-        <link rel="shortcut icon" href="favicon.ico" type="image/icon">
-        <link rel="icon" href="favicon.ico" type="image/icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/icon">
+    <link rel="icon" href="favicon.ico" type="image/icon">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">  
@@ -38,51 +39,76 @@
    <div class="templatemo-content-container">
   <div class="templatemo-content-widget no-padding">
 <?php
-mysql_connect('localhost','root','');
-mysql_select_db('details');
-if(isset($_POST['s2']))
-{ 
-$Susn = $_POST['susn'];
-$RESULT = mysql_query("SELECT * FROM basicdetails WHERE USN='$Susn'");
-$row = mysql_fetch_assoc($RESULT);
-echo "<br><h3>Details of Student '$Susn'&nbsp:&nbsp";
-echo "</h3>";
-            print "<center><tr>"; 
-	print "<br><td>First Name :";
-    echo $row['FirstName'];
-	print "<br></td><td>Last Name :"; 
-	echo $row['LastName'];	
-	print "<br></td><td>USN :"; 
-	echo $row['USN'];
-	print "<br></td><td>Mobile :"; 
-	echo $row['Mobile'];
-	print "<br></td><td>Email :";
-    echo $row['Email'];	
-	print "<br></td><td>DOB :"; 
-	echo $row['DOB'];
-	print "<br></td><td>Semister :"; 
-	echo $row['Sem'];
-	print "<br></td><td>Branch :"; 
-	echo $row['Branch'];	
-	print "<br></td><td>SSLC Percentage :";
-	echo $row['SSLC'];
-	print "<br></td><td>PU/Diploma Percentage :";
-	echo $row['PU/Dip'];
-	print "<br></td><td>BE Aggregate :";
-	echo $row['BE'];
-	print "<br></td><td>Current Backlogs :";
-	echo $row['Backlogs'];
-	print "<br></td><td>History of Backlogs :";
-	echo $row['HofBacklogs'];
-	print "<br></td><td>Detain Years :";
-	echo $row['DetainYears'];
-print "</td></tr></center>"; 
+// Replace mysql functions with mysqli
+$conn = mysqli_connect('localhost', 'root', 'root', 'details');
+
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+
+if(isset($_POST['s2'])) { 
+    $Susn = $_POST['susn'];
+    
+    // Escape user input to prevent SQL injection
+    $escapedSusn = mysqli_real_escape_string($conn, $Susn);
+    
+    $query = "SELECT * FROM basicdetails WHERE USN='$escapedSusn'";
+    $RESULT = mysqli_query($conn, $query);
+    
+    if (!$RESULT) {
+        die("Query failed: " . mysqli_error($conn));
+    }
+    
+    if (mysqli_num_rows($RESULT) > 0) {
+        $row = mysqli_fetch_assoc($RESULT);
+        
+        echo "<br><h3>Details of Student '$Susn'&nbsp:&nbsp</h3>";
+        print "<center><tr>"; 
+        print "<br><td>First Name : ";
+        echo htmlspecialchars($row['FirstName']);
+        print "<br></td><td>Last Name : "; 
+        echo htmlspecialchars($row['LastName']);
+        print "<br></td><td>USN : "; 
+        echo htmlspecialchars($row['USN']);
+        print "<br></td><td>Mobile : "; 
+        echo htmlspecialchars($row['Mobile']);
+        print "<br></td><td>Email : ";
+        echo htmlspecialchars($row['Email']);
+        print "<br></td><td>DOB : "; 
+        echo htmlspecialchars($row['DOB']);
+        print "<br></td><td>Semister : "; 
+        echo htmlspecialchars($row['Sem']);
+        print "<br></td><td>Branch : "; 
+        echo htmlspecialchars($row['Branch']);
+        print "<br></td><td>SSLC Percentage : ";
+        echo htmlspecialchars($row['SSLC']);
+        print "<br></td><td>PU/Diploma Percentage : ";
+        echo htmlspecialchars($row['PU/Dip']);
+        print "<br></td><td>BE Aggregate : ";
+        echo htmlspecialchars($row['BE']);
+        print "<br></td><td>Current Backlogs : ";
+        echo htmlspecialchars($row['Backlogs']);
+        print "<br></td><td>History of Backlogs : ";
+        echo htmlspecialchars($row['HofBacklogs']);
+        print "<br></td><td>Detain Years : ";
+        echo htmlspecialchars($row['DetainYears']);
+        print "</td></tr></center>";
+    } else {
+        echo "<br><h3>No student found with USN '$Susn'</h3>";
+    }
+    
+    // Free result set
+    mysqli_free_result($RESULT);
+}
+
+// Close connection
+mysqli_close($conn);
 ?>
 <footer class="text-right">
-            <p>Copyright &copy; 2001-2015 CIT-PMS
-            |  Developed by <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a></p>
-          </footer>         
+    <p>Copyright &copy; 2001-2015 CIT-PMS
+    | Developed by <a href="http://znumerique.azurewebsites.net" target="_parent">ZNumerique Technologies</a></p>
+</footer>         
         </div>
       </div>
     </div>    
@@ -97,5 +123,5 @@ print "</td></tr></center>";
         $('img.content-bg-img').hide();        
       });
     </script>
-	</body>
-	</html>
+  </body>
+</html>
