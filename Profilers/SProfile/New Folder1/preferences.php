@@ -170,8 +170,8 @@
                   <input type="text" name="Percentage" class="form-control" id="sslc" placeholder="">
                 </div>
 				<div class="col-lg-6 col-md-6 form-group">
-                  <label for="Pu">12th/Diploma Aggregate</label>
-                  <input type="text" name="Puagg" class="form-control" id="Pu" placeholder="">
+                  <label for="PU/Dip">12th/Diploma Aggregate</label>
+                  <input type="text" name="Puagg" class="form-control" id="PU/Dip" placeholder="">
                 </div>
 				<div class="col-lg-6 col-md-6 form-group">
                   <label for="BE">BE Aggregate</label>

@@ -97,7 +97,7 @@ if(isset($_POST['update'])) {
         mysqli_stmt_close($check_stmt);
         
         // Update the record - Changed column name to PUDip to match database
-        $update_stmt = mysqli_prepare($connect, "UPDATE `basicdetails` SET `FirstName`=?, `LastName`=?, `Mobile`=?, `Email`=?, `DOB`=?, `Sem`=?, `Branch`=?, `SSLC`=?, `PU_Dip`=?, `BE`=?, `Backlogs`=?, `HofBacklogs`=?, `DetainYears`=?, `Approve`='0' WHERE `USN`=?");
+        $update_stmt = mysqli_prepare($connect, "UPDATE `basicdetails` SET `FirstName`=?, `LastName`=?, `Mobile`=?, `Email`=?, `DOB`=?, `Sem`=?, `Branch`=?, `SSLC`=?, `PU/Dip`=?, `BE`=?, `Backlogs`=?, `HofBacklogs`=?, `DetainYears`=?, `Approve`='0' WHERE `USN`=?");
         
         mysqli_stmt_bind_param($update_stmt, "ssssssssssssss", $fname, $lname, $phno, $email, $date, $cursem, $branch, $per, $puagg, $beaggregate, $back, $hisofbk, $detyear, $USN);
         
@@ -283,8 +283,8 @@ if(isset($_POST['update'])) {
                   <input type="text" name="Percentage" class="form-control" id="sslc" placeholder="">
                 </div>
 				<div class="col-lg-6 col-md-6 form-group">
-                  <label for="PU_Dip">12th/Diploma Aggregate</label>
-                  <input type="text" name="Puagg" class="form-control" id="PU_Dip" placeholder="">
+                  <label for="PU/Dip">12th/Diploma Aggregate</label>
+                  <input type="text" name="Puagg" class="form-control" id="PU/Dip" placeholder="">
                 </div>
 				<div class="col-lg-6 col-md-6 form-group">
                   <label for="BE">BE Aggregate</label>
