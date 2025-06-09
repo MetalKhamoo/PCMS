@@ -1,4 +1,5 @@
 📌 Placement Cell Management System
+
 The Placement Cell Management System is a full-stack web application designed to streamline and enhance communication between key stakeholders in a university’s placement process — including students, the Principal, HOD, and the Placement Officer. This system simplifies the workflow of managing student placement data, recruiter information, and approval hierarchies while ensuring transparency and direct interaction among all parties involved.
 
 ✨ Key Features:
